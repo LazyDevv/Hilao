@@ -1,6 +1,6 @@
 <p align="center"><img src="https://raw.githubusercontent.com/LazyDevv/Hilao/master/activate.png" alt="activate"></p>
 
-<h1 align="center">Microsoft *Simplified* Activation  Scripts (mSas)</h1>
+<h1 align="center">Hardware Independent License Activation Operation (H.I.L.A.O)</h1>
 
 <p align="center">A Windows activator using KMS38 method, with a focus on streamlining the process for normies.</p>
 <hr>
