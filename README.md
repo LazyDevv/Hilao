@@ -26,4 +26,4 @@ In case any problems arise, please troubleshoot with the resources provided by t
 
 ---
 <p align="center"> Made with <br>
-    <img height="250" src="https://raw.githubusercontent.com/LazyDevv/Hilao/master/ctrlcctrlv.jpg" alt="ctrlcctrlv"></p>
+    <img height="250" src="https://raw.githubusercontent.com/LazyDevv/Hilao/master/ctrlcctrlv.png" alt="ctrlcctrlv"></p>
