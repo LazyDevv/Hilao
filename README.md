@@ -7,9 +7,7 @@
 
 ## Download / How to use it?
 
-### Method 1 - PowerShell (Recommended)
-
--   Right-click on the Windows start menu and select PowerShell or Terminal (Not CMD).
+-   Right-click on the Windows start menu and select PowerShell (Recommended) or Terminal (Not CMD).
 -   Copy-paste the below code and press enter
     ```
     iex (irm is.gd/gctj20)
@@ -18,16 +16,12 @@
 -   Wait for 5-10 seconds, depending on your internet connection and setup.
 -   That's all.
 
-```
-Latest Version: 2.5
-Release date: 16-Nov-2023
-```
+<br>
 In case any problems arise, please troubleshoot with the resources provided by the creator of this method of activation.
-Some are linked below :
+<br> Some are linked below :
 
 ### [Troubleshooting / Help](https://massgrave.dev/troubleshoot.html)
 ### [Download Original Windows & Office](https://massgrave.dev/genuine-installation-media.html)
-### Homepage - [https://massgrave.dev/](https://massgrave.dev/)
 </br>
 
 ---
