@@ -17,10 +17,8 @@
 -   That's all.
 
 <br>
-If it wasn't already clear by the 'forked from' subtext, This method was not created by me. The credit goes to @Massgrave.
-<br>
-In case any problems arise, please troubleshoot with the resources provided by the creator of this method of activation.
-<br> Some are linked below :
+If it wasn't already clear by the 'forked from' subtext, this method was not created by me. The credit goes to @Massgrave.
+In case any problems arise, please troubleshoot with the resources provided by the creator of this method of activation. Some are linked below :
 
 ### [Troubleshooting / Help](https://massgrave.dev/troubleshoot.html)
 ### [Download Original Windows & Office](https://massgrave.dev/genuine-installation-media.html)
