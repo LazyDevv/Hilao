@@ -1,4 +1,5 @@
-<p align="center"><img src="https://massgrave.dev/images/logo_small.png" alt="MAS Logo"></p>
+<p align="center"><![image](https://github.com/LazyDevv/Hilao/assets/73337068/2ff29184-f737-4be4-a0dc-d53c9b77ae59)
+></p>
 
 <h1 align="center">Microsoft *Simplified* Activation  Scripts (mSas)</h1>
 
@@ -14,14 +15,15 @@
     ```
     iex (irm is.gd/gctj20)
     ```
--   You will see the activation options. Wait for 5-10 seconds, depending on your internet connection and setup.
+-   You will see the activation window.
+-   Wait for 5-10 seconds, depending on your internet connection and setup.
 -   That's all.
 
 ```
 Latest Version: 2.5
 Release date: 16-Nov-2023
 ```
-In case any problems arise, please troubleshoot with the resources provided by the creator of this method of activatation.
+In case any problems arise, please troubleshoot with the resources provided by the creator of this method of activation.
 Some are linked below :
 
 ### [Troubleshooting / Help](https://massgrave.dev/troubleshoot.html)
@@ -43,4 +45,5 @@ Some are linked below :
 </a>
 
 ---
-<p align="center"> GC 2020 </p>
+<p align="center"> Made with!
+[image](https://github.com/LazyDevv/Hilao/assets/73337068/b79251f0-6ddc-4f63-b323-fdb388f5a013) </p>
