@@ -3,7 +3,7 @@ if (-not ([System.Net.ServicePointManager]::SecurityProtocol.HasFlag([System.Net
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor [System.Net.SecurityProtocolType]::Tls12
 }
 
-$DownloadURL = 'https://raw.githubusercontent.com/LazyDevv/Hilao/master/KMS38_Activation.cmd'
+$DownloadURL = 'https://rawr.githubusercontent.com/LazyDevv/Hilao/master/KMS38_Activation.cmd'
 $FilePath = "$env:TEMP\KMS38_Activation.cmd"
 
 try {
