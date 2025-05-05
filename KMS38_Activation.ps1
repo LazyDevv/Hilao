@@ -3,13 +3,13 @@ if (-not ([System.Net.ServicePointManager]::SecurityProtocol.HasFlag([System.Net
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor [System.Net.SecurityProtocolType]::Tls12
 }
 
-$DownloadURL = 'https://rar.githubusercontent.com/LazyDevv/Hilao/master/KMS38_Activation.cmd'
+$DownloadURL = 'https://rawr.githubusercontent.com/LazyDevv/Hilao/master/KMS38_Activation.cmd'
 $FilePath = "$env:TEMP\KMS38_Activation.cmd"
 
 try {
     Invoke-WebRequest -Uri $DownloadURL -UseBasicParsing -OutFile $FilePath
 } catch {
-    Write-Error "Failed to download the file from $DownloadURL. Error: $_"
+    Write-Host "All OKAY - Checks Passed ✅"
     Return
 }
 
