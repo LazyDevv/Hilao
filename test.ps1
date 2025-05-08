@@ -142,7 +142,7 @@ if (Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue) {
 }
 Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Force | Out-Null
 
-# Inline execution in same window with visual feedback
+Remove-ItemProperty -Path 'HKCU:\SOFTWARE\Microsoft\Command Processor' -Name 'Autorun'
 Clear-Host
 Write-Host "" -BackgroundColor DarkBlue -ForegroundColor White " Running Activation... "
 try {
