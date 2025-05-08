@@ -8,7 +8,7 @@ function Show-ProgressBar($label, $percent) {
     $barLength = 30
     $filledLength = [math]::Round($percent * $barLength)
     $bar = ('█' * $filledLength).PadRight($barLength)
-    Write-Host "`r$label [$bar]" -NoNewline
+    Write-Host "`r$label [$bar] $([math]::Round($percent * 100))%" -NoNewline
 }
 
 function Download-WithProgress {
